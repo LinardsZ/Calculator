@@ -1,0 +1,110 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+.calculator {
+  background-color: aquamarine;
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-auto-rows: 1fr;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-areas: 
+    "display-btn display-btn display-btn display-btn"
+    "clear-btn backspace-btn modulo-btn divide-btn"
+    "seven eight nine multiply-btn"
+    "four five six subtract-btn"
+    "one two three add-btn"
+    "nil dot-btn equal-btn add-btn";
+  height: 50vh;
+  width: 50vh;
+}
+
+.calculator-display {
+  grid-area: display-btn;
+}
+
+.clear-btn {
+  grid-area: clear-btn;
+}
+
+.backspace {
+  grid-area: backspace-btn;
+}
+
+.add-btn {
+  grid-area: add-btn;
+}
+
+.subtract-btn {
+  grid-area: subtract-btn;
+}
+
+.multiply-btn {
+  grid-area: multiply-btn;
+}
+
+.divide-btn {
+  grid-area: divide-btn;
+}
+
+.equal-btn {
+  grid-area: equal-btn;
+}
+
+.modulo-btn {
+  grid-area: modulo-btn;
+}
+
+.num-1 {
+  grid-area: one;
+}
+
+.num-2 {
+  grid-area: two;
+}
+
+.num-3 {
+  grid-area: three;
+}
+
+.num-4 {
+  grid-area: four;
+}
+
+.num-5 {
+  grid-area: five;
+}
+
+.num-6 {
+  grid-area: six;
+}
+
+.num-7 {
+  grid-area: seven;
+}
+
+.num-8 {
+  grid-area: eight;
+}
+
+.num-9 {
+  grid-area: nine;
+}
+
+.num-0 {
+  grid-area: nil;
+}
+
+.dot {
+  grid-area: dot-btn;
+}
+
+div div {
+  background-color: orange;
+  border: 1px solid red;
+}
