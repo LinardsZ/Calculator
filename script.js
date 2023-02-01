@@ -1,122 +1,85 @@
 "use strict";
 const calcDisplay = document.querySelector(".calculator-display");
 const clearButton = document.querySelector(".clear-btn");
-const addButton = document.querySelector(".add-btn");
-const subtractButton = document.querySelector(".subtract-btn");
-const multiplyButton = document.querySelector(".multiply-btn");
-const divideButton = document.querySelector(".divide-btn");
-const moduloButton = document.querySelector(".modulo-btn");
 const equalButton = document.querySelector(".equal-btn");
+const operatorButtons = document.querySelectorAll(".operator");
+const numpadButtons = document.querySelectorAll(".numpad");
+const backspaceButton = document.querySelector(".backspace");
 
-let FIRST_OPERAND = null;
-let SECOND_OPERAND = null;
-let OPERATOR = null;
+let calculationResult = 0;
+let operator = null;
 
-clearButton.addEventListener("click", reset);
-
-const operations = [addButton, subtractButton, multiplyButton, divideButton, moduloButton];
-operations.forEach(function(button) {
-  button.addEventListener("click", setOperator);
-})
-
-const numpad = document.querySelectorAll(".numpad");
-numpad.forEach(function(button) {
-  button.addEventListener("click", setOperand);
-});
-
-equalButton.addEventListener("click", operate);
-
-function operate() {
-    //TODO: if second operand is null, then execute the expression even without second operand
-  if (!FIRST_OPERAND || !OPERATOR) return;
-  switch (OPERATOR) {
-    case "+":
-      add();
-      break;
-    case "-":
-      subtract();
-      break;
-    case "*":
-      multiply();
-      break;
-    case "/":
-      divide();
-      break;
-    case "%":
-      modulo();
-      break;
-    default:
-      alert("error");
-    }
+function resetCalculator() {
+  calcDisplay.textContent = "0";
+  calculationResult = 0;
+  operator = null;
 }
 
-function add() {
-  FIRST_OPERAND = +FIRST_OPERAND + +SECOND_OPERAND;
-  clearInternalValues();
-  setDisplay(FIRST_OPERAND);
-}
+function setCalculatorDisplay(event) {
+  let nextDigit = event.target.getAttribute("data-num");
+  let displayedValue = calcDisplay.textContent;
 
-function subtract() {
-  FIRST_OPERAND = +FIRST_OPERAND - +SECOND_OPERAND;
-  clearInternalValues();
-  setDisplay(FIRST_OPERAND);
-}
+  if (isNaN(displayedValue + nextDigit) || displayedValue.length === 16) return; //the size of the calculator on the webpage only allows for up to 16 characters
 
-function multiply() {
-  FIRST_OPERAND = +FIRST_OPERAND * +SECOND_OPERAND;
-  clearInternalValues();
-  setDisplay(FIRST_OPERAND);
-}
-
-function divide() {
-  FIRST_OPERAND = +FIRST_OPERAND / +SECOND_OPERAND;
-  clearInternalValues();
-  setDisplay(FIRST_OPERAND);
-}
-
-function modulo() {
-  FIRST_OPERAND = +FIRST_OPERAND % +SECOND_OPERAND;
-  clearInternalValues();
-  setDisplay(FIRST_OPERAND);
-}
-
-function setDisplay(value) {
-  calcDisplay.textContent = value;
-}
-
-function setOperator() {
-  if (OPERATOR === null && FIRST_OPERAND !== null) {
-    OPERATOR = this.textContent;
-  }
-}
-
-function setOperand() {
-  if (FIRST_OPERAND === null) {
-    FIRST_OPERAND = this.textContent;
-    setDisplay(FIRST_OPERAND);
-  }
-  else if (FIRST_OPERAND !== null && OPERATOR === null) {
-    FIRST_OPERAND = FIRST_OPERAND + this.textContent;
-    setDisplay(FIRST_OPERAND);
-  }
-  else if (SECOND_OPERAND === null){
-    SECOND_OPERAND = this.textContent;
-    setDisplay(SECOND_OPERAND);
+  if(displayedValue === "0" || displayedValue === "") {
+    calcDisplay.textContent = nextDigit;
   }
   else {
-    SECOND_OPERAND = SECOND_OPERAND + this.textContent;
-    setDisplay(SECOND_OPERAND);
+    calcDisplay.textContent = displayedValue + nextDigit; 
   }
 }
 
-function clearInternalValues() {
-  SECOND_OPERAND = null;
-  OPERATOR = null;
+function setCalculatorState(event) { //3+3= and 3+3 + (shows result, saves +)
+  let newOperator = event.target.getAttribute("data-operator");
+  if (operator === null) {
+    calculationResult = calcDisplay.textContent;
+    calcDisplay.textContent = "";
+  }
+  operator = newOperator;
 }
 
-function reset() {
-  calcDisplay.textContent = 0;
-  FIRST_OPERAND = null;
-  SECOND_OPERAND = null;
-  OPERATOR = null;
+function calculateResult() {
+  let firstOperand = +calculationResult;
+  let secondOperand = +calcDisplay.textContent;
+  
+  switch(operator) {
+    case "+":
+      firstOperand += secondOperand;
+      break;
+    case "-":
+      firstOperand -= secondOperand;
+      break;
+    case "*":
+      firstOperand *= secondOperand;
+      break;
+    case "/":
+      firstOperand /= secondOperand;
+      break;
+    case "%":
+      firstOperand %= secondOperand;
+      break;
+    default: //handle case for = and unexpected cases
+      break;
+  }
+
+  calcDisplay.textContent = firstOperand;
+  calculationResult = firstOperand;
+  operator = null;
 }
+
+
+operatorButtons.forEach(button => button.addEventListener("click", setCalculatorState));
+numpadButtons.forEach(button => button.addEventListener("click", setCalculatorDisplay));
+equalButton.addEventListener("click", calculateResult);
+clearButton.addEventListener("click", resetCalculator);
+backspaceButton.addEventListener("click", () => {
+    calcDisplay.textContent = calcDisplay.textContent.slice(0, -1);
+    if(operator === null) calculationResult = calcDisplay.textContent;
+
+    if (calcDisplay.textContent === "-") {
+      calcDisplay.textContent = "";
+      calculationResult = 0;
+    }
+});
+
+
